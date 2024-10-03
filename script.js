@@ -21,7 +21,7 @@ const account2 = {
 
 const account3 = {
   owner: 'Yoseph Legesse',
-  movements: [200, -200, 340, -300, -20, 50, 400, -460],
+  movements: [20000, -200, 340000, -300, -20, 50000, 400000, -460],
   interestRate: 0.7,
   pin: 3333,
 };
@@ -79,9 +79,10 @@ const currencies = new Map([
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 // acc = accounts.movements;
 
-const displayMov = function (movements) {
+const displayMov = function (movements, sort = false) {
   containerMovements.textContent = '';
-  movements.forEach(function (mov, i) {
+  const movs = sort ? movements.sort((a, b) => a - b) : movements;
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const display = ` <div class="movements__row">
@@ -213,6 +214,72 @@ btnTransfer.addEventListener('click', function (e) {
     // inputTransferAmount.value = inputTransferTo.value = '';
   }
   inputTransferAmount.value = inputTransferTo.value = '';
+  console.log(currentAccount);
 });
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+  const amount = Number(inputLoanAmount.value);
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.5)) {
+    currentAccount.movements.push(amount);
+    update(currentAccount);
+  }
+
+  inputLoanAmount.value = '';
+});
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  console.log('delete');
+
+  if (
+    inputCloseUsername.value === currentAccount.userName &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.userName === currentAccount.userName
+    );
+    console.log(index);
+
+    // Delete account
+    accounts.splice(index, 1);
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+  }
+
+  inputCloseUsername.value = inputClosePin.value = '';
+});
+let sorted = false;
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMov(currentAccount.movements, !sorted);
+  sorted = !sorted;
+});
+// const movs = movements.some(mov => mov > 2000);
+// console.log(movs);
+
+// console.log('rahwa');
+
+const legesse = ['ra', ['ke'], ['ma'], 'josy'];
+console.log(legesse.flat());
+
+// const rahw = accounts.map(acc => acc.movements);
+// console.log(rahw);
+// const ra = rahw.flat();
+// console.log(ra);
+// const r = ra.reduce((acc, mov) => acc + mov, 0);
+// console.log(r);
+const rah = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(rah);
+const ra = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(ra);
+
+const x = movements.sort((a, b) => b - a);
+console.log(x);
 
 /////////////////////////////////////////////////
